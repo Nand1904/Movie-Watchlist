@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>View Movie Details</title>
+</head>
+<body>
+    <h1>View Movie Details</h1>
+    <form action="{% url 'view_movie_details' %}" method="post">
+        {% csrf_token %}
+        <label for="search_term">Search Term:</label>
+        <input type="text" id="search_term" name="search_term" required>
+        <button type="submit">View Details</button>
+    </form>
+    {% if movie_details %}
+        <h2>Movie Details</h2>
+        <ul>
+            <li>Title: {{ movie_details.original_title }}</li>
+            <li>Release Date: {{ movie_details.release_date }}</li>
+            <li>Adult-rated: {{ movie_details.adult }}</li>
+            <li>Rating: {{ movie_details.vote_average }}</li>
+            <li>Overview: {{ movie_details.overview }}</li>
+        </ul>
+    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
