@@ -28,5 +28,5 @@ urlpatterns = [
     path('add_movie_to_watchlist/', views.add_movie_to_watchlist, name='add_movie_to_watchlist'),  # Define the URL pattern for the add_movie_to_watchlist view here
     path('view_watchlist/', views.view_watchlist, name='view_watchlist'), # Define the URL pattern for the view_watchlist view here
     path('remove_movie_from_watchlist/', views.remove_movie_from_watchlist, name='remove_movie_from_watchlist'), # Define the URL pattern for the remove_movie_from_watchlist view here
-    # Include other URL patterns from 'watchlist.urls'
+    # Add URL patterns for the remaining views here
 ]
