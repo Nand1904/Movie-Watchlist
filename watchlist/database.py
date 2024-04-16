@@ -2,7 +2,7 @@ import pyodbc
 import requests
 
 # Connect to SQL Server
-conn = pyodbc.connect('DRIVER={SQL SERVER};SERVER=DINI\SQLEXPRESS;DATABASE=WATCHLIST;')
+conn = pyodbc.connect('DRIVER={SQL SERVER};SERVER=DINI\SQLEXPRESS;DATABASE=WATCHLIST;') # change the server name to your server name
 cursor = conn.cursor()
 
 # API details
