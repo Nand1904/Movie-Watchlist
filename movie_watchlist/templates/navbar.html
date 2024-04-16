@@ -20,12 +20,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
+                    {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
@@ -44,20 +39,19 @@
                             <li>
                                 <a class="dropdown-item" href="{% url 'view_movie_details' %}">Movie Details</a>
                             </li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'add_movie_to_watchlist' %}">Add Movie To
-                                    Watchlist</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'view_watchlist' %}">View Watchlist</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'remove_movie_from_watchlist' %}">Delete Movie
-                                    from
-                                    Watchlist</a>
-                            </li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
