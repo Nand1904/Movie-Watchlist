@@ -2,7 +2,7 @@ import pyodbc
 import requests
 
 # Connect to SQL Server
-conn = pyodbc.connect('DRIVER={SQL SERVER};SERVER=DINI\SQLEXPRESS;DATABASE=WATCHLIST;')
+conn = pyodbc.connect('DRIVER={SQL SERVER};SERVER=NAND\SQLEXPRESS;DATABASE=WATCHLIST;')
 cursor = conn.cursor()
 
 # API details
@@ -140,3 +140,19 @@ def get_watchlist(username):
     except Exception as e:
         print(f"Error fetching watchlist: {e}")
         return None
+    
+def remove_watchlist_entries_for_user(username):
+    try:
+        # Get the user's ID
+        cursor.execute("SELECT id FROM Users WHERE username = ?", (username,))
+        user_id = cursor.fetchone()
+
+        if user_id is not None:
+            # Remove watchlist entries for the user
+            cursor.execute("DELETE FROM Watchlist WHERE user_id = ?", (user_id[0],))
+            conn.commit()
+            print(f"Watchlist entries removed for user '{username}'.")
+        else:
+            print(f"User '{username}' does not exist.")
+    except Exception as e:
+        print(f"Error removing watchlist entries for user '{username}': {e}")
