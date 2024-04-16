@@ -5,9 +5,6 @@ from . import database
 def home_page_view(request):
     return render(request, 'home.html')
 
-def about_page_view(request):
-    return render(request, 'about.html')
-
 def add_user(request):
     message = ""
     if request.method == 'POST':
