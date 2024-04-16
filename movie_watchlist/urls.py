@@ -14,14 +14,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
+
+from django.urls import path
 from watchlist import views  # Import your views module
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', views.home_page_view, name='home'),  # Define the root URL pattern here
-    path('about/', views.about_page_view, name='about'),  # Add a new URL pattern for the about page
+    path('add_user/', views.add_user, name='add_user'), # Define the URL pattern for the add_user view here
+    path('delete_user/', views.delete_user, name='delete_user'), # Define the URL pattern for the delete_user view here
+    path('view_all_users/', views.view_all_users, name='view_all_users'), # Define the URL pattern for the view_all_users view here
+    path('search_movies/', views.search_movies, name='search_movies'), # Define the URL pattern for the search_movies view here
+    path('view_movie_details/', views.view_movie_details, name='view_movie_details'), # Define the URL pattern for the view_movie_details view here
+    path('add_movie_to_watchlist/', views.add_movie_to_watchlist, name='add_movie_to_watchlist'),  # Define the URL pattern for the add_movie_to_watchlist view here
+    path('view_watchlist/', views.view_watchlist, name='view_watchlist'), # Define the URL pattern for the view_watchlist view here
+    path('remove_movie_from_watchlist/', views.remove_movie_from_watchlist, name='remove_movie_from_watchlist'), # Define the URL pattern for the remove_movie_from_watchlist view here
     # Include other URL patterns from 'watchlist.urls'
-    path('', include('watchlist.urls')),
 ]

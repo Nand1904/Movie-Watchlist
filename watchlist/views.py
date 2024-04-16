@@ -5,29 +5,34 @@ from . import database
 def home_page_view(request):
     return render(request, 'home.html')
 
+def about_page_view(request):
+    return render(request, 'about.html')
+
 def add_user(request):
+    message = ""
     if request.method == 'POST':
         username = request.POST.get('username')
         if username:
             if database.add_user(username):
-                return HttpResponse("User added successfully!")
+                message = "User added successfully!"
             else:
-                return HttpResponse("Failed to add user. Please try again.")
+                message = "Failed to add user. Please try again."
         else:
-            return HttpResponse("Username cannot be empty.")
-    return render(request, 'add_user.html')
+            message = "Username cannot be empty."
+    return render(request, 'add_user.html', {'message': message})
 
 def delete_user(request):
+    message = ""
     if request.method == 'POST':
         username = request.POST.get('username')
         if username:
             if database.delete_user(username):
-                return HttpResponse("User deleted successfully!")
+                message = "User deleted successfully!"
             else:
-                return HttpResponse("Failed to delete user. Please try again.")
+                message = "Failed to delete user. Please try again."
         else:
-            return HttpResponse("Username cannot be empty.")
-    return render(request, 'delete_user.html')
+            message = "Username cannot be empty."
+    return render(request, 'delete_user.html', {'message': message})
 
 def view_all_users(request):
     users = database.all_users()
