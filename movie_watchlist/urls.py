@@ -20,7 +20,9 @@ from watchlist import views  # Import your views module
 
 urlpatterns = [
     path('', views.home_page_view, name='home'),  # Define the root URL pattern here
-    path('add_user/', views.add_user, name='add_user'), # Define the URL pattern for the add_user view here
+    path('register/', views.register, name='register'), # Define the URL pattern for the register view here')
+    path('login/', views.loginPage, name='login'), # Define the URL pattern for the login view here
+    path('logout/', views.logoutUser, name='logout'), # Define the URL pattern for the logout view her
     path('delete_user/', views.delete_user, name='delete_user'), # Define the URL pattern for the delete_user view here
     path('view_all_users/', views.view_all_users, name='view_all_users'), # Define the URL pattern for the view_all_users view here
     path('search_movies/', views.search_movies, name='search_movies'), # Define the URL pattern for the search_movies view here

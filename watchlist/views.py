@@ -1,22 +1,47 @@
-from django.shortcuts import render
+from sqlite3 import Cursor
 from django.http import HttpResponse
 from . import database
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
+from .forms import CreateUserForm
 def home_page_view(request):
     return render(request, 'home.html')
+from .database import conn  # Import the connection object from the database module
 
-def add_user(request):
-    message = ""
+def register(request):
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request, 'Account created successfully for ' + user)  # Display success message
+            return redirect('login')  # Redirect to login page after successful registration
+    else:
+        form = CreateUserForm()
+    return render(request, 'register.html', {'form': form})
+
+def loginPage(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        if username:
-            if database.add_user(username):
-                message = "User added successfully!"
-            else:
-                message = "Failed to add user. Please try again."
+        password = request.POST.get('password')
+           
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)  # Fix here: Use the authenticated user object
+            return redirect('home')
         else:
-            message = "Username cannot be empty."
-    return render(request, 'add_user.html', {'message': message})
+            messages.error(request, 'Username or password is incorrect')  # Fix here: Use messages.error
+            return render(request, 'login.html')  # Fix here: Render login.html again
+    else:
+        return render(request, 'login.html')
+    
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
 
 def delete_user(request):
     message = ""
@@ -32,7 +57,7 @@ def delete_user(request):
     return render(request, 'delete_user.html', {'message': message})
 
 def view_all_users(request):
-    users = database.all_users()
+    users = User.objects.all()  # Retrieve all users from the Django database
     return render(request, 'view_all_users.html', {'users': users})
 
 def search_movies(request):
@@ -48,12 +73,23 @@ def search_movies(request):
 def view_movie_details(request):
     if request.method == 'POST':
         search_term = request.POST.get('search_term')
-        if search_term:
-            movie_details = database.search_movies_api(search_term)
-            return render(request, 'view_movie_details.html', {'movie_details': movie_details})
+        movie_details = database.search_movies_api(search_term)
+        if movie_details:
+            movie = movie_details[0]  # Assuming we only show details for the first movie found
+            context = {
+                'movie_details': {
+                    'title': movie.get('original_title', 'N/A'),
+                    'release_date': movie.get('release_date', 'N/A'),
+                    'adult': movie.get('adult', 'N/A'),
+                    'rating': movie.get('vote_average', 'N/A'),
+                    'overview': movie.get('overview', 'N/A')
+                }
+            }
         else:
-            return HttpResponse("Search term cannot be empty.")
-    return render(request, 'view_movie_details.html')
+            context = {'movie_details': None}
+        return render(request, 'view_movie_details.html', context)
+    else:
+        return render(request, 'view_movie_details.html')
 
 def add_movie_to_watchlist(request):
     if request.method == 'POST':
