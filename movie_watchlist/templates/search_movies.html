@@ -12,7 +12,7 @@
             padding-top: 50px;
         }
     </style>
-    <title>Search Movies</title>
+    <title>Searched Movies</title>
 </head>
 
 <body>
@@ -33,6 +33,10 @@
                         <h5 class="card-title" style="font-weight: bold;">{{ movie.title }}</h5>
                         <p class="card-text">Release date: {{ movie.release_date }}</p>
                         <a href="{% url 'view_movie_details' movie.id %}" class="btn btn-primary">Details</a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'add_movie_to_watchlist' %}" class="btn btn-secondary">Add to Watch
+                            List</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
