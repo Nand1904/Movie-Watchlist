@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from .database import remove_watchlist_entries_for_user
 from django.contrib import messages
 
 from .forms import CreateUserForm
@@ -44,16 +45,28 @@ def logoutUser(request):
     return redirect('login')
 
 def delete_user(request):
-    message = ""
     if request.method == 'POST':
         username = request.POST.get('username')
-        if username:
-            if database.delete_user(username):
-                message = "User deleted successfully!"
-            else:
-                message = "Failed to delete user. Please try again."
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        # Authenticate user
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # Delete the user
+            user.delete()
+            
+            # Remove watchlist entries for the user
+            remove_watchlist_entries_for_user(username)
+            
+            message = "User deleted successfully!"
+            return redirect('home')
         else:
-            message = "Username cannot be empty."
+            message = "Invalid credentials. Please provide correct username, email, and password."
+    else:
+        message = ""  # No message initially
+    
     return render(request, 'delete_user.html', {'message': message})
 
 def view_all_users(request):
