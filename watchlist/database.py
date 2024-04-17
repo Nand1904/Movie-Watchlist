@@ -15,13 +15,42 @@ def search_movies_api(search_term):
         url = f"{BASE_URL}/search/movie?api_key={API_KEY}&query={search_term}"
         response = requests.get(url)
         if response.status_code == 200:
-            return response.json().get('results', [])
+            results = response.json().get('results', [])
+            for movie in results:
+                movie_id = movie['id']
+                image_url = f"{BASE_URL}/movie/{movie_id}/images?api_key={API_KEY}"
+                image_response = requests.get(image_url)
+                if image_response.status_code == 200:
+                    images = image_response.json()
+                    posters = [img['file_path'] for img in images.get('posters', [])]
+                    movie['poster'] = posters[0] if posters else None
+            return results
         else:
             print("Error: Unable to fetch movies from the API.")
             return []
     except Exception as e:
         print(f"Error searching movies in API: {e}")
         return []
+
+def get_movie_by_id(movie_id):
+    try:
+        url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            movie = response.json()
+            image_url = f"{BASE_URL}/movie/{movie_id}/images?api_key={API_KEY}"
+            image_response = requests.get(image_url)
+            if image_response.status_code == 200:
+                images = image_response.json()
+                posters = [img['file_path'] for img in images.get('posters', [])]
+                movie['poster'] = posters[0] if posters else None
+            return movie
+        else:
+            print(f"Error: Unable to fetch movie with id {movie_id} from the API.")
+            return None
+    except Exception as e:
+        print(f"Error fetching movie from API: {e}")
+        return None
 
 # USER MANAGEMENT
 def add_user(username):

@@ -61,35 +61,29 @@ def view_all_users(request):
     return render(request, 'view_all_users.html', {'users': users})
 
 def search_movies(request):
-    if request.method == 'POST':
-        search_term = request.POST.get('search_term')
-        if search_term:
-            movies = database.search_movies_api(search_term)
-            return render(request, 'search_movies.html', {'movies': movies})
-        else:
-            return HttpResponse("Search term cannot be empty.")
-    return render(request, 'search_movies.html')
-
-def view_movie_details(request):
-    if request.method == 'POST':
-        search_term = request.POST.get('search_term')
-        movie_details = database.search_movies_api(search_term)
-        if movie_details:
-            movie = movie_details[0]  # Assuming we only show details for the first movie found
-            context = {
-                'movie_details': {
-                    'title': movie.get('original_title', 'N/A'),
-                    'release_date': movie.get('release_date', 'N/A'),
-                    'adult': movie.get('adult', 'N/A'),
-                    'rating': movie.get('vote_average', 'N/A'),
-                    'overview': movie.get('overview', 'N/A')
-                }
-            }
-        else:
-            context = {'movie_details': None}
-        return render(request, 'view_movie_details.html', context)
+    search_term = request.GET.get('q', '')
+    if search_term:
+        movies = database.search_movies_api(search_term)
+        return render(request, 'search_movies.html', {'movies': movies})
     else:
-        return render(request, 'view_movie_details.html')
+        return render(request, 'search_movies.html')
+
+def view_movie_details(request, movie_id):
+    movie = database.get_movie_by_id(movie_id)
+    if movie:
+        context = {
+            'movie_details': {
+                'title': movie.get('original_title', 'N/A'),
+                'release_date': movie.get('release_date', 'N/A'),
+                'adult': movie.get('adult', 'N/A'),
+                'rating': movie.get('vote_average', 'N/A'),
+                'overview': movie.get('overview', 'N/A'),
+                'poster': movie.get('poster', 'N/A')
+            }
+        }
+    else:
+        context = {'movie_details': None}
+    return render(request, 'view_movie_details.html', context)
 
 def add_movie_to_watchlist(request):
     if request.method == 'POST':

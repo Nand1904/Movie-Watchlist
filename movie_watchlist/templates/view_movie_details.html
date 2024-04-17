@@ -12,23 +12,33 @@
 <body>
     {% extends 'main.html' %}
     {% block content %}
-    <h1>View Movie Details</h1>
-    <form action="{% url 'view_movie_details' %}" method="post">
-        {% csrf_token %}
-        <label for="search_term">Search Term:</label>
-        <input type="text" id="search_term" name="search_term" required>
-        <button type="submit">View Details</button>
-    </form>
     {% if movie_details %}
-    <h2>Movie Details</h2>
-    <ul>
-        <li><strong>Title:</strong> {{ movie_details.title }}</li>
-        <li><strong>Release Date:</strong> {{ movie_details.release_date }}</li>
-        <li><strong>Adult-rated:</strong> {% if movie_details.adult %}Yes{% else %}No{% endif %}</li>
-        <li><strong>Rating:</strong> {{ movie_details.rating }}/10</li>
-        <li><strong>Overview:</strong> {{ movie_details.overview }}</li>
-    </ul>
+        <div class="d-flex justify-content-center align-items-center pt-5" style="height: auto;">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        {% if movie_details.poster %}
+                        <img src="https://image.tmdb.org/t/p/w500{{ movie_details.poster }}" class="img-fluid rounded-start"
+                            alt="{{ movie_details.title }}">
+                        {% else %}
+                        <img src="https://via.placeholder.com/150" class="img-fluid rounded-start" alt="No poster available">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ movie_details.title }}</h5>
+                            <p class="card-text">{{ movie_details.overview }}</p>
+                            <p class="card-text"><small class="text-body-secondary">Release Date: {{ movie_details.release_date }}</small></p>
+                            <p class="card-text"><small class="text-body-secondary">Rating: {{ movie_details.rating }}/10</small></p>
+                            <p class="card-text"><small class="text-body-secondary">Adult-rated: {% if movie_details.adult %}Yes{% else %}No{% endif %}</small></p>
+                        </div>
+                    </div>
+                </div>
+        </div>
     {% endif %}
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
