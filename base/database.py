@@ -131,6 +131,7 @@ def add_movie_to_watchlist(username, movie):
         print(f"Error adding movie to watchlist: {type(e).__name__}, {e}")
         return False
 
+
 def user_exists(username):
     try:
         Cursor.execute("SELECT * FROM Users WHERE username = ?", (username,))
