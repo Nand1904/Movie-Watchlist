@@ -111,8 +111,7 @@ def add_movie_to_watchlist(request, username, movie_id):
 
 @login_required
 def view_watchlist(request, username):
-    if request.method == 'POST':
-        username = username
+    if request.method == 'GET':
         if username:
             watchlist = database.get_watchlist(username)
             return render(request, 'view_watchlist.html', {'watchlist': watchlist, 'username': username})

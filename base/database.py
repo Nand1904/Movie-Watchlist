@@ -5,6 +5,7 @@ from django.db import connection
 from django.core.management import call_command
 from django.db.utils import ConnectionDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms.models import model_to_dict
 from .models import Watchlist
 
 # API details
@@ -97,7 +98,7 @@ def all_users():
         return []
 
 # WATCHLIST MANAGEMENT
-def add_movie_to_watchlist(username, movie):
+def add_movie_to_watchlist(username, movie): # Completed
     try:
         movie_title = movie.get('original_title', 'N/A')
         movie_release_date = movie.get('release_date', 'N/A')
@@ -159,29 +160,28 @@ def remove_movie_from_watchlist(username, movie_name):
         print(f"Error removing movie from watchlist: {e}")
         return False
 
-def movie_exists_in_watchlist(username, movie_name):
-    try:
-        # Check if the user exists
-        Cursor.execute("SELECT * FROM Users WHERE username = ?", (username,))
-        existing_user = Cursor.fetchone()
+# def movie_exists_in_watchlist(username, movie_name):
+#     try:
+#         # Check if the user exists
+#         Cursor.execute("SELECT * FROM Users WHERE username = ?", (username,))
+#         existing_user = Cursor.fetchone()
 
-        if not existing_user:
-            print(f"User '{username}' does not exist.")
-            return False
+#         if not existing_user:
+#             print(f"User '{username}' does not exist.")
+#             return False
 
-        # Check if the movie exists in the user's watchlist
-        Cursor.execute("SELECT * FROM Watchlist WHERE user_id = ? AND movie_name = ?", (existing_user[0], movie_name))
-        existing_movie = Cursor.fetchone()
-        return existing_movie is not None
-    except Exception as e:
-        print(f"Error checking if movie exists in watchlist: {e}")
-        return False
+#         # Check if the movie exists in the user's watchlist
+#         Cursor.execute("SELECT * FROM Watchlist WHERE user_id = ? AND movie_name = ?", (existing_user[0], movie_name))
+#         existing_movie = Cursor.fetchone()
+#         return existing_movie is not None
+#     except Exception as e:
+#         print(f"Error checking if movie exists in watchlist: {e}")
+#         return False
 
 def get_watchlist(username):
     try:
-        Cursor.execute("SELECT movie_name FROM Watchlist WHERE user_id = (SELECT id FROM Users WHERE username = ?)", (username,))
-        watchlist = Cursor.fetchall()
-        return watchlist
+        watchlist = Watchlist.objects.filter(username=username)
+        return [model_to_dict(movie) for movie in watchlist]
     except Exception as e:
         print(f"Error fetching watchlist: {e}")
         return None

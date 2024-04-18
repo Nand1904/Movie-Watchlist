@@ -12,31 +12,37 @@
 <body>
     {% extends 'main.html' %}
     {% block content %}
-    <h1>View Watchlist</h1>
     {% if watchlist %}
-    <h2>Watchlist for {{ username }}</h2>
-    <ul>
+    <div class="row row-cols-1 row-cols-md-3 g-4 p-4">
         {% for movie in watchlist %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card" style="width: 20rem;">
-                {% if movie.poster %}
-                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster }}" class="card-img-top"
-                    alt="{{ movie.title }} poster">
-                {% else %}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png"
-                    class="img-fluid rounded-start" alt="No poster available">
-                {% endif %}
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title" style="font-weight: bold;">{{ movie.title }}</h5>
-                    <p class="card-text"><strong>Release date:</strong> {{ movie.release_date }}</p>
-                    <a href="{% url 'view_movie_details' movie.id %}" class="btn btn-primary">Details</a>
+        <div class="col">
+            <div class="card mb-3 p-2">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        {% if movie.movie_poster %}
+                        <img src="https://image.tmdb.org/t/p/w500{{ movie.movie_poster }}"
+                            class="img-fluid rounded-start" alt="{{ movie.movie_title }}">
+                        {% else %}
+                        <img src="https://via.placeholder.com/150" class="img-fluid rounded-start"
+                            alt="No poster available">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ movie.movie_title }}</h5>
+                            <p class="card-text">{{ movie.overview }}</p>
+                            <p class="card-text"><small class="text-body-secondary">Release Date: {{ movie.release_date }}</small></p>
+                            <p class="card-text"><small class="text-body-secondary">Rating: {{ movie.rating }}/10</small></p>
+                            <p class="card-text"><small class="text-body-secondary">Adult-rated: {% if movie.adult %}Yes{% else %}No{% endif %}</small></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         {% empty %}
-        <li>No movies found in watchlist.</li>
+        <p>No movies found in watchlist.</p>
         {% endfor %}
-    </ul>
+    </div>
     {% else %}
     <p>No movies found in watchlist.</p>
     {% endif %}

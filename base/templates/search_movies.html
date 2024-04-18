@@ -45,19 +45,19 @@
                         <p class="card-text"><strong>Release date:</strong> {{ movie.release_date }}</p>
                         <a href="{% url 'view_movie_details' movie.id %}" class="btn btn-primary">Details</a>
                         {% if user.is_authenticated %}
-                        <form class="addMovieForm" data-url="{% url 'add_movie_to_watchlist' user.username movie.id %}">
-                            {% csrf_token %}
-                            <input class="btn btn-secondary addButton" style="margin-top:3px" type="button"
-                                value="Add Movie to Watchlist">
-                        </form>
-                        <div class="messageBox" style="display: none;">
-                            {% if messages %}
-                            <div class="messages">
-                                {% for message in messages %}
-                                <div{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+                            <form class="addMovieForm" data-url="{% url 'add_movie_to_watchlist' user.username movie.id %}">
+                                {% csrf_token %}
+                                <input class="btn btn-secondary addButton" style="margin-top:3px" type="button"
+                                    value="Add Movie to Watchlist">
+                            </form>
+                            <div class="messageBox" style="display: none;">
+                                {% if messages %}
+                                <div class="messages">
+                                    {% for message in messages %}
+                                    <div{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+                                </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
-                        </div>
                         {% endif %}
                     </div>
                     {% endif %}
