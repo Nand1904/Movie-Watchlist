@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,23 +8,29 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <title>Add Movie to Watchlist</title>
 </head>
+
 <body>
     {% extends 'main.html' %}
     {% block content %}
     <div class="container">
         <h1>Add Movie to Watchlist</h1>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Confirm Movie Details</h5>
-                <p class="card-text">Title: {{ movie_title }}</p>
-                <p class="card-text">Release Date: {{ movie_release_date }}</p>
-                <!-- Include other necessary movie details here -->
-                <form action="{% url 'add_movie_to_watchlist' %}" method="post">
+        <div class="card" style="width: 20rem;">
+            {% if movie.poster %}
+            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster }}" class="card-img-top"
+                alt="{{ movie.title }} poster">
+            {% else %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png"
+                class="img-fluid rounded-start" alt="No poster available">
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title" style="font-weight: bold;">{{ movie.title }}</h5>
+                <p class="card-text"><strong>Release date:</strong> {{ movie.release_date }}</p>
+                <form action="{% url 'add_movie_to_watchlist'  user.username movie.id %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="movie_title" value="{{ movie_title }}">
                     <input type="hidden" name="movie_release_date" value="{{ movie_release_date }}">
                     <!-- Include other hidden fields for additional movie details -->
-                    <button type="submit" class="btn btn-primary">Confirm Add to Watchlist</button>
+                    <button type="submit" class="btn btn-primary">Confirm</button>
                 </form>
             </div>
         </div>
@@ -34,4 +41,5 @@
         crossorigin="anonymous"></script>
     {% endblock %}
 </body>
+
 </html>

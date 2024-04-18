@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from .database import remove_watchlist_entries_for_user
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import JsonResponse
 
 from .forms import CreateUserForm
 
@@ -64,9 +65,9 @@ def delete_user(request):
     
     return render(request, 'delete_user.html', {'message': message})
 
-def view_all_users(request):
-    users = database.all_users()
-    return render(request, 'view_all_users.html', {'users': users})
+# def view_all_users(request):
+#     users = database.all_users()
+#     return render(request, 'view_all_users.html', {'users': users})
 
 def search_movies(request):
     search_term = request.GET.get('q', '')
@@ -94,25 +95,24 @@ def view_movie_details(request, movie_id):
     return render(request, 'view_movie_details.html', context)
 
 @login_required
-def add_movie_to_watchlist(request):
+def add_movie_to_watchlist(request, username, movie_id):
     if request.method == 'POST':
         user = request.user
-        movie_title = request.POST.get('movie_title')
-        movie_release_date = request.POST.get('movie_release_date')
-
-        if movie_title and movie_release_date:
-            if database.add_movie_to_watchlist(user.username, movie_title, movie_release_date):
-                return redirect('view_watchlist')
+        movie = database.get_movie_by_id(movie_id)
+        if movie:
+            if database.add_movie_to_watchlist(username, movie):
+                return JsonResponse({'message': 'Movie successfully added to watchlist.'}, status=200)
             else:
-                return HttpResponse("Failed to add movie to watchlist. Please try again.")
+                return JsonResponse({'message': 'Failed to add movie to watchlist. Please try again.'}, status=400)
         else:
-            return HttpResponse("Movie title and release date cannot be empty.")
-    return HttpResponse("Invalid request method.")
+            return JsonResponse({'message': 'Movie not found.'}, status=404)
+    else:
+        return JsonResponse({'message': 'Invalid request method.'}, status=405)
 
-
-def view_watchlist(request):
+@login_required
+def view_watchlist(request, username):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = username
         if username:
             watchlist = database.get_watchlist(username)
             return render(request, 'view_watchlist.html', {'watchlist': watchlist, 'username': username})
@@ -120,6 +120,7 @@ def view_watchlist(request):
             return HttpResponse("Username cannot be empty.")
     return render(request, 'view_watchlist.html')
 
+@login_required
 def remove_movie_from_watchlist(request):
     if request.method == 'POST':
         username = request.POST.get('username')

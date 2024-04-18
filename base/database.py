@@ -1,6 +1,11 @@
 from sqlite3 import Cursor
 import requests
+import traceback
 from django.db import connection
+from django.core.management import call_command
+from django.db.utils import ConnectionDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
+from .models import Watchlist
 
 # API details
 API_KEY = '8b76ff1a2bbd88072cc966292315c565'
@@ -92,23 +97,38 @@ def all_users():
         return []
 
 # WATCHLIST MANAGEMENT
-def add_movie_to_watchlist(username, movie_title, movie_release_date):
+def add_movie_to_watchlist(username, movie):
     try:
-        with connection.cursor() as cursor:
-            # Check if the movie is already in the watchlist for the user
-            cursor.execute("SELECT * FROM Watchlist WHERE user_id = (SELECT id FROM Users WHERE username = ?) AND movie_title = ?", (username, movie_title))
-            existing_entry = cursor.fetchone()
+        movie_title = movie.get('original_title', 'N/A')
+        movie_release_date = movie.get('release_date', 'N/A')
+        movie_adult = movie.get('adult', 'N/A')
+        movie_rating = movie.get('vote_average', 'N/A')
+        movie_overview = movie.get('overview', 'N/A')
+        movie_poster = movie.get('poster', 'N/A')
+        movie_id = movie.get('id', 'N/A')
 
-            if existing_entry:
-                print(f"Movie '{movie_title}' already exists in the watchlist.")
-                return False
+        # Check if the movie is already in the watchlist for the user
+        existing_entry = Watchlist.objects.filter(username=username, movie_title=movie_title)
 
-            # Add movie to watchlist
-            cursor.execute("INSERT INTO Watchlist (user_id, movie_title, movie_release_date) VALUES ((SELECT id FROM Users WHERE username = ?), ?, ?)", (username, movie_title, movie_release_date))
-            print(f"Movie '{movie_title}' added to the watchlist.")
-            return True
+        if existing_entry.exists():
+            print(f"Movie '{movie_title}' already exists in the watchlist.")
+            return False
+
+        # Add movie to watchlist
+        Watchlist.objects.create(
+            username=username,
+            movie_id=movie_id,
+            movie_title=movie_title,
+            release_date=movie_release_date,
+            adult=movie_adult,
+            rating=movie_rating,
+            overview=movie_overview,
+            movie_poster=movie_poster
+        )
+        print(f"Movie '{movie_title}' added to the watchlist.")
+        return True
     except Exception as e:
-        print(f"Error adding movie to watchlist: {e}")
+        print(f"Error adding movie to watchlist: {type(e).__name__}, {e}")
         return False
 
 def user_exists(username):

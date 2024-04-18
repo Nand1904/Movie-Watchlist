@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'base.apps.WatchlistConfig',  # Add this line to include the base app in the project
 ]
 
 MIDDLEWARE = [
@@ -54,7 +55,7 @@ ROOT_URLCONF = 'movie_watchlist.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'movie_watchlist' / 'templates'],  # Add this line to specify the templates directory
+        'DIRS': [BASE_DIR / 'base' / 'templates'],  # Add this line to specify the templates directory
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
