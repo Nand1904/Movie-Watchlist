@@ -45,11 +45,12 @@
                         <p class="card-text"><strong>Release date:</strong> {{ movie.release_date }}</p>
                         <a href="{% url 'view_movie_details' movie.id %}" class="btn btn-primary">Details</a>
                         {% if user.is_authenticated %}
-                            <form class="addMovieForm" data-url="{% url 'add_movie_to_watchlist' user.username movie.id %}">
+                            <form class="addMovieForm" data-url="{% url 'add_movie_to_watchlist' user.username movie.id %}" style="display: flex; justify-content: center; align-items: center; margin-top: 3px;">
                                 {% csrf_token %}
-                                <input class="btn btn-secondary addButton" style="margin-top:3px" type="button"
+                                <input class="btn btn-secondary addButton" type="button" style="padding-left: 60px; padding-right: 60px;"
                                     value="Add Movie to Watchlist">
                             </form>
+                        
                             <div class="messageBox" style="display: none;">
                                 {% if messages %}
                                 <div class="messages">

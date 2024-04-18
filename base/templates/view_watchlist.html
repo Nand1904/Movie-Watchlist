@@ -24,7 +24,7 @@
         .movie-card img {
             border-top-left-radius: 10px;
             border-bottom-left-radius: 10px;
-            max-width: 100%; /* Ensure images fit within container */
+            max-width: 150px; /* Ensure images fit within container */
             height: auto; /* Maintain aspect ratio */
         }
 
@@ -57,36 +57,36 @@
     {% extends 'main.html' %}
     {% block content %}
     {% if watchlist %}
-    <div class="container mt-4">
+    <div class="container mt-5">
         <div class="row">
             {% for movie in watchlist %}
             <div class="col-md-4">
                 <div class="movie-card">
-                    <img src="https://image.tmdb.org/t/p/w500{{ movie.movie_poster }}" class="card-img-top"
-                        alt="{{ movie.movie_title }}">
+                    <div class="card-img-top mx-auto d-block"
+                        style="background-image: url('https://image.tmdb.org/t/p/w500{{ movie.movie_poster }}'); height: 200px; background-position: center; background-repeat: no-repeat; background-size: cover;">
+                    </div>
                     <div class="movie-details">
                         <h5 class="movie-title">{{ movie.movie_title }}</h5>
                         <p class="movie-overview">{{ movie.overview }}</p>
                         <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
                         <p><strong>Rating:</strong> {{ movie.rating }}/10</p>
                         <p><strong>Adult-rated:</strong> {% if movie.adult %}Yes{% else %}No{% endif %}</p>
-                        <form class="removeMovieForm" data-url="{% url 'remove_movie_from_watchlist' %}">
+                        <form class="removeMovieForm text-center" data-url="{% url 'remove_movie_from_watchlist' %}" style="align-items: center;">
                             {% csrf_token %}
                             <input type="hidden" name="username" value="{{ username }}">
                             <input type="hidden" name="movie_title" value="{{ movie.movie_title }}">
-                            <button type="button" class="btn btn-remove">Remove</button>
+                            <button type="button" class="btn btn-remove bolder" style=" padding-left: 70px; padding-right: 70px;">Remove</button>
                         </form>
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <p class="text-center">No movies found in watchlist.</p>
             {% endfor %}
         </div>
     </div>
     {% else %}
-    <div class="container mt-4">
-        <p class="text-center">No movies found in watchlist.</p>
+    <div class="container mt-4 text-center" style="font-weight: bolder; padding-top: 230px;">
+        <p>Oops! No movie found in Watchlist.</p>
+        <p>Try adding a Movie.</p>
     </div>
     {% endif %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
