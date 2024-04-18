@@ -13,29 +13,29 @@
     {% extends 'main.html' %}
     {% block content %}
     {% if movie_details %}
-        <div class="d-flex justify-content-center align-items-center pt-5" style="height: auto;">
-            <div class="card mb-3" style="max-width: 540px;">
+    <div class="d-flex justify-content-center align-items-center pt-5" style="height: auto;">
+            <div class="card mb-3" style="max-width: 660px;">
                 <div class="row g-0">
                     <div class="col-md-4">
                         {% if movie_details.poster %}
-                        <img src="https://image.tmdb.org/t/p/w500{{ movie_details.poster }}" class="img-fluid rounded-start"
+                        <img src="https://image.tmdb.org/t/p/w500{{ movie_details.poster }}" class="card-img-top rounded-start"
                             alt="{{ movie_details.title }}">
                         {% else %}
-                        <img src="https://via.placeholder.com/150" class="img-fluid rounded-start" alt="No poster available">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png" class="img-fluid rounded-start" alt="No poster available">
                         {% endif %}
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title">{{ movie_details.title }}</h5>
                             <p class="card-text">{{ movie_details.overview }}</p>
-                            <p class="card-text"><small class="text-body-secondary">Release Date: {{ movie_details.release_date }}</small></p>
-                            <p class="card-text"><small class="text-body-secondary">Rating: {{ movie_details.rating }}/10</small></p>
-                            <p class="card-text"><small class="text-body-secondary">Adult-rated: {% if movie_details.adult %}Yes{% else %}No{% endif %}</small></p>
+                            <p class="card-text"><small class="text-body-secondary"><strong>Release Date:</strong> {{ movie_details.release_date }}</small></p>
+                            <p class="card-text"><small class="text-body-secondary"><strong>Rating:</strong> {{ movie_details.rating }}/10</small></p>
+                            <p class="card-text"><small class="text-body-secondary"><strong>Adult-rated:</strong> {% if movie_details.adult %}Yes{% else %}No{% endif %}</small></p>
                         </div>
                     </div>
                 </div>
-        </div>
-    {% endif %}
+            </div>
+        {% endif %}
     </div>
 
 

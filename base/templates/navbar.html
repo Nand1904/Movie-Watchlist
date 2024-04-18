@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="background: linear-gradient(#3f369c -100%, #111111 50%);">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Movie Watchlist</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -19,24 +19,24 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto ">
                     {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" style="align-items: end;">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            Dropdown
+                            {{ user.username }}
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropleft">
                             <li>
-                                <a class="dropdown-item" href="{% url 'delete_user' %}">Delete User</a>
+                                <a class="dropdown-item" href="{% url 'delete_user' %}">Delete My Account</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="{% url 'view_watchlist' user.username %}">View Watchlist</a>
+                                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                             </li>
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        <li>
+                            <a class="nav-link" href="{% url 'view_watchlist' user.username %}">My Watchlist</a>
+                        </li>
                     </li>
                     {% else %}
                     <li class="nav-item">
