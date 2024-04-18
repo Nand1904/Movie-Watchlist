@@ -7,6 +7,7 @@ from django.db.utils import ConnectionDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from .models import Watchlist
+from django.contrib.auth.models import User
 
 # API details
 API_KEY = '8b76ff1a2bbd88072cc966292315c565'
@@ -142,23 +143,25 @@ def user_exists(username):
         print(f"Error checking if user exists: {e}")
         return False
 
-def remove_movie_from_watchlist(username, movie_name):
+def remove_movie_from_watchlist(username, movie_title):
     try:
-        Cursor.execute("SELECT id FROM Users WHERE username = ?", (username,))
-        user_id = Cursor.fetchone()
-
-        if user_id is None:
-            print(f"User '{username}' does not exist.")
+        # Check if the user exists
+        user = User.objects.get(username=username)
+        
+        # Check if the movie exists in the user's watchlist
+        watchlist_entry = Watchlist.objects.filter(user=user, movie_title=movie_title).first()
+        if watchlist_entry:
+            # Remove the movie from the user's watchlist
+            watchlist_entry.delete()
+            print(f"Movie '{movie_title}' removed from the watchlist for user '{username}'.")
+            return True
+        else:
+            print(f"Movie '{movie_title}' not found in the watchlist for user '{username}'.")
             return False
-
-        # Remove movie from watchlist
-        Cursor.execute("DELETE FROM Watchlist WHERE user_id = ? AND movie_name = ?", (user_id[0], movie_name))
-        connection.commit()
-        print(f"Movie '{movie_name}' removed from the watchlist.")
-        return True
     except Exception as e:
         print(f"Error removing movie from watchlist: {e}")
         return False
+
 
 # def movie_exists_in_watchlist(username, movie_name):
 #     try:

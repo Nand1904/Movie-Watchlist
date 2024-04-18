@@ -8,7 +8,9 @@ from .database import remove_watchlist_entries_for_user
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-
+from django.shortcuts import HttpResponse
+from django.http import JsonResponse
+from .models import Watchlist
 from .forms import CreateUserForm
 
 def home_page_view(request):
@@ -123,12 +125,18 @@ def view_watchlist(request, username):
 def remove_movie_from_watchlist(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        movie_name = request.POST.get('movie_name')
-        if username and movie_name:
-            if database.remove_movie_from_watchlist(username, movie_name):
-                return HttpResponse("Movie removed from watchlist successfully!")
-            else:
-                return HttpResponse("Failed to remove movie from watchlist. Please try again.")
+        movie_title = request.POST.get('movie_title')
+        
+        if username and movie_title:
+            try:
+                # Filter the watchlist entry by username and movie title
+                watchlist_entry = Watchlist.objects.get(username=username, movie_title=movie_title)
+                watchlist_entry.delete()
+                return JsonResponse({'message': 'Movie removed from watchlist successfully!'}, status=200)
+            except Watchlist.DoesNotExist:
+                return JsonResponse({'message': 'Movie not found in watchlist.'}, status=404)
+            except Exception as e:
+                return JsonResponse({'message': f'Error removing movie from watchlist: {e}'}, status=500)
         else:
-            return HttpResponse("Username and movie name cannot be empty.")
-    return render(request, 'remove_movie_from_watchlist.html')
+            return JsonResponse({'message': 'Username and movie title cannot be empty.'}, status=400)
+    return JsonResponse({'message': 'Invalid request method.'}, status=405)
