@@ -18,7 +18,7 @@
                 <p class="card-text">Title: {{ movie_title }}</p>
                 <p class="card-text">Release Date: {{ movie_release_date }}</p>
                 <!-- Include other necessary movie details here -->
-                <form action="{% url 'add_movie_to_watchlist' %}" method="post">
+                <form action="{% url 'add_movie_to_watchlist'%}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="movie_title" value="{{ movie_title }}">
                     <input type="hidden" name="movie_release_date" value="{{ movie_release_date }}">

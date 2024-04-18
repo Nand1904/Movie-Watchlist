@@ -92,24 +92,53 @@ def all_users():
         return []
 
 # WATCHLIST MANAGEMENT
-def add_movie_to_watchlist(username, movie_title, movie_release_date):
+def add_movie_to_watchlist(username, movie_id):
     try:
+        # Ensure movie_id is converted to integer
+        movie_id = int(movie_id)
+        
         with connection.cursor() as cursor:
             # Check if the movie is already in the watchlist for the user
-            cursor.execute("SELECT * FROM Watchlist WHERE user_id = (SELECT id FROM Users WHERE username = ?) AND movie_title = ?", (username, movie_title))
+            cursor.execute("SELECT * FROM Watchlist WHERE user_id = (SELECT id FROM Users WHERE username = ?) AND movie_id = ?", (username, movie_id))
             existing_entry = cursor.fetchone()
 
             if existing_entry:
-                print(f"Movie '{movie_title}' already exists in the watchlist.")
+                print(f"Movie with ID '{movie_id}' already exists in the watchlist.")
                 return False
 
-            # Add movie to watchlist
-            cursor.execute("INSERT INTO Watchlist (user_id, movie_title, movie_release_date) VALUES ((SELECT id FROM Users WHERE username = ?), ?, ?)", (username, movie_title, movie_release_date))
+            # Retrieve movie details using movie ID from the API
+            movie_details = get_movie_by_id(movie_id)
+            if not movie_details:
+                print(f"Movie with ID '{movie_id}' not found.")
+                return False
+
+            movie_title = movie_details.get('title', '')
+            release_date = movie_details.get('release_date', '')
+            adult = movie_details.get('adult', False)
+            vote_average = movie_details.get('vote_average', 0.0)
+            overview = movie_details.get('overview', '')
+
+            # Print out values before executing the SQL query
+            print(f"Adding movie to watchlist:\n"
+                  f"Username: {username}\n"
+                  f"Movie ID: {movie_id}\n"
+                  f"Movie Title: {movie_title}\n"
+                  f"Release Date: {release_date}\n"
+                  f"Adult: {adult}\n"
+                  f"Vote Average: {vote_average}\n"
+                  f"Overview: {overview}")
+
+            # Add movie details to the watchlist
+            cursor.execute("INSERT INTO Watchlist (user_id, movie_id, movie_title, release_date, adult, vote_average, overview) VALUES ((SELECT id FROM Users WHERE username = ?), ?, ?, ?, ?, ?, ?)",
+                (username, movie_id, movie_title, release_date, adult, vote_average, overview))
+
+            connection.commit()
             print(f"Movie '{movie_title}' added to the watchlist.")
             return True
     except Exception as e:
         print(f"Error adding movie to watchlist: {e}")
         return False
+
 
 def user_exists(username):
     try:

@@ -94,20 +94,19 @@ def view_movie_details(request, movie_id):
     return render(request, 'view_movie_details.html', context)
 
 @login_required
-def add_movie_to_watchlist(request):
+def add_movie_to_watchlist(request, movie_id):
     if request.method == 'POST':
         user = request.user
-        movie_title = request.POST.get('movie_title')
-        movie_release_date = request.POST.get('movie_release_date')
-
-        if movie_title and movie_release_date:
-            if database.add_movie_to_watchlist(user.username, movie_title, movie_release_date):
+        movie_details = database.get_movie_by_id(movie_id)  # Use a different variable for movie details
+        if movie_details:
+            if database.add_movie_to_watchlist(user.username, movie_id):  # Pass movie_id as integer
                 return redirect('view_watchlist')
             else:
                 return HttpResponse("Failed to add movie to watchlist. Please try again.")
         else:
-            return HttpResponse("Movie title and release date cannot be empty.")
+            return HttpResponse("Movie details not found.")
     return HttpResponse("Invalid request method.")
+
 
 
 def view_watchlist(request):
