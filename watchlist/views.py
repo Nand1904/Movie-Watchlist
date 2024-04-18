@@ -1,4 +1,3 @@
-from sqlite3 import Cursor
 from django.http import HttpResponse
 from . import database
 from django.contrib.auth.forms import UserCreationForm
@@ -6,12 +5,13 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .database import remove_watchlist_entries_for_user
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from .forms import CreateUserForm
+
 def home_page_view(request):
     return render(request, 'home.html')
-from .database import conn  # Import the connection object from the database module
 
 def register(request):
     if request.method == 'POST':
@@ -19,8 +19,8 @@ def register(request):
         if form.is_valid():
             form.save()
             user = form.cleaned_data.get('username')
-            messages.success(request, 'Account created successfully for ' + user)  # Display success message
-            return redirect('login')  # Redirect to login page after successful registration
+            messages.success(request, 'Account created successfully for ' + user)
+            return redirect('login')
     else:
         form = CreateUserForm()
     return render(request, 'register.html', {'form': form})
@@ -32,11 +32,11 @@ def loginPage(request):
            
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)  # Fix here: Use the authenticated user object
+            login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Username or password is incorrect')  # Fix here: Use messages.error
-            return render(request, 'login.html')  # Fix here: Render login.html again
+            messages.error(request, 'Username or password is incorrect')
+            return render(request, 'login.html')
     else:
         return render(request, 'login.html')
     
@@ -50,27 +50,22 @@ def delete_user(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         
-        # Authenticate user
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
-            # Delete the user
             user.delete()
-            
-            # Remove watchlist entries for the user
             remove_watchlist_entries_for_user(username)
-            
             message = "User deleted successfully!"
             return redirect('home')
         else:
             message = "Invalid credentials. Please provide correct username, email, and password."
     else:
-        message = ""  # No message initially
+        message = ""
     
     return render(request, 'delete_user.html', {'message': message})
 
 def view_all_users(request):
-    users = User.objects.all()  # Retrieve all users from the Django database
+    users = database.all_users()
     return render(request, 'view_all_users.html', {'users': users})
 
 def search_movies(request):
@@ -98,18 +93,22 @@ def view_movie_details(request, movie_id):
         context = {'movie_details': None}
     return render(request, 'view_movie_details.html', context)
 
+@login_required
 def add_movie_to_watchlist(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        movie_name = request.POST.get('movie_name')
-        if username and movie_name:
-            if database.add_movie_to_watchlist(username, movie_name):
-                return HttpResponse("Movie added to watchlist successfully!")
+        user = request.user
+        movie_title = request.POST.get('movie_title')
+        movie_release_date = request.POST.get('movie_release_date')
+
+        if movie_title and movie_release_date:
+            if database.add_movie_to_watchlist(user.username, movie_title, movie_release_date):
+                return redirect('view_watchlist')
             else:
                 return HttpResponse("Failed to add movie to watchlist. Please try again.")
         else:
-            return HttpResponse("Username and movie name cannot be empty.")
-    return render(request, 'add_movie_to_watchlist.html')
+            return HttpResponse("Movie title and release date cannot be empty.")
+    return HttpResponse("Invalid request method.")
+
 
 def view_watchlist(request):
     if request.method == 'POST':

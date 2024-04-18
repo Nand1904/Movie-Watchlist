@@ -13,21 +13,27 @@
     {% extends 'main.html' %}
     {% block content %}
     <h1>View Watchlist</h1>
-    <form action="{% url 'view_watchlist' %}" method="post">
-        {% csrf_token %}
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <button type="submit">View Watchlist</button>
-    </form>
     {% if watchlist %}
     <h2>Watchlist for {{ username }}</h2>
     <ul>
         {% for movie in watchlist %}
-        <li>{{ movie.0 }}</li>
+        <li>
+            <strong>{{ movie.title }}</strong><br>
+            Release Date: {{ movie.release_date }}<br>
+            <!-- Display other movie details as needed -->
+            <form action="{% url 'remove_movie_from_watchlist' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="username" value="{{ username }}">
+                <input type="hidden" name="movie_name" value="{{ movie.title }}">
+                <button type="submit" class="btn btn-danger">Remove</button>
+            </form>
+        </li>
         {% empty %}
         <li>No movies found in watchlist.</li>
         {% endfor %}
     </ul>
+    {% else %}
+    <p>No movies found in watchlist.</p>
     {% endif %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
