@@ -24,7 +24,7 @@
 			width: 350px;
 			margin-top: auto;
 			margin-bottom: auto;
-			background: #3f369c;
+			background: #1f1d36;
 			position: relative;
 			display: flex;
 			justify-content: center;
@@ -75,7 +75,7 @@
 		}
 
 		#messages {
-			background-color: grey;
+			background-color: #f7ba5b;
 			color: #fff;
 			padding: 10px;
 			margin-top: 10px;
@@ -122,9 +122,9 @@
 				<p id="messages">{{ message }}</p>
 				{% endfor %}
 
-				<div class="mt-4">
-					<div class="d-flex justify-content-center links text-black">
-						Don't have an account? <a href="{% url 'register' %}" class="ml-2 text-black">Sign Up</a>
+				<div class="mt-3">
+					<div class="d-flex justify-content-center links text-white">
+						Don't have an account? <a href="{% url 'register' %}" class="ml-2 text-white"><strong>Sign Up</strong></a>
 					</div>
 
 				</div>

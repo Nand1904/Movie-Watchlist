@@ -23,7 +23,7 @@
 			width: 350px;
 			margin-top: auto;
 			margin-bottom: auto;
-			background: #3f369c;;
+			background: #1f1d36;
 			position: relative;
 			display: flex;
 			justify-content: center;
@@ -70,6 +70,12 @@
 		.input_pass:focus {
 			box-shadow: none !important;
 			outline: 0px !important;
+		}
+
+		.form-errors {
+			margin-top: 10px;
+			color: rgb(179, 49, 49);
+			font-weight: bold;
 		}
 	</style>
 
@@ -118,10 +124,11 @@
 						</div>
 					</form>
 				</div>
-				{{form.errors}}
-				<div class="mt-4">
-					<div class="d-flex justify-content-center links text-black">
-						Already have an account? <a href="{% url 'login' %}" class="ml-2 text-black">Login</a>
+				
+				<div class="form-errors">{{form.errors}}</div>
+				<div class="mt-1">
+					<div class="d-flex justify-content-center links text-white">
+						Already have an account? <a href="{% url 'login' %}" class="ml-2 text-white"><strong>Login</strong></a>
 					</div>
 				</div>
 			</div>
