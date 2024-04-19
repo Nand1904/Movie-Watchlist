@@ -70,7 +70,7 @@
                         <p class="movie-overview">{{ movie.overview }}</p>
                         <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
                         <p><strong>Rating:</strong> {{ movie.rating }}/10</p>
-                        <p><strong>Adult-rated:</strong> {% if movie.adult %}Yes{% else %}No{% endif %}</p>
+                        <p><strong>Adult-rated:</strong> {{ movie.adult }}</p>
                         <form class="removeMovieForm text-center" data-url="{% url 'remove_movie_from_watchlist' %}" style="align-items: center;">
                             {% csrf_token %}
                             <input type="hidden" name="username" value="{{ username }}">
