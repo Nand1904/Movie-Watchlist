@@ -10,20 +10,20 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="background: linear-gradient( 109.6deg,  rgba(61,131,97,1) 11.2%, rgba(28,103,88,1) 91.1% );">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary"
+        style="background: linear-gradient( 109.6deg,  rgba(61,131,97,1) 11.2%, rgba(28,103,88,1) 91.1% );">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Movie Watchlist</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedConten"
+                aria-controls="navbarSupportedConten" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto ">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedConten">
+                <ul class="navbar-nav mr-auto ">
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown" style="align-items: end;">
-                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                        <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name != 'view_watchlist' %}active{% endif %}"
+                            href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{ user.username }}
                         </a>
                         <ul class="dropdown-menu dropleft">
@@ -34,9 +34,10 @@
                                 <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                             </li>
                         </ul>
-                        <li>
-                            <a class="nav-link active" href="{% url 'view_watchlist' user.username %}">My Watchlist</a>
-                        </li>
+                    </li>
+                    <li>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'view_watchlist' %}active{% endif %}"
+                            href="{% url 'view_watchlist' user.username %}">My Watchlist</a>
                     </li>
                     {% else %}
                     <li class="nav-item {% if request.resolver_match.url_name == 'register' %}active{% endif %}">
@@ -49,6 +50,7 @@
                 </ul>
             </div>
         </div>
+    </nav>
     </nav>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
