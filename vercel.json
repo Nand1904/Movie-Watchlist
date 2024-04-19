@@ -1,0 +1,18 @@
+{
+    "builds": [
+        {
+            "src": "movie_watchlist/wsgi.py",
+            "use": "@vercel/python",
+            "config": {
+                "maxLambdaSize": "15mb",
+                "runtime": "python3.12.3"
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "movie_watchlist/wsgi.py"
+        }
+    ]
+}
