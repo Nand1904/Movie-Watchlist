@@ -19,9 +19,9 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedConten">
-                <ul class="navbar-nav mr-auto ">
+                <ul class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
-                    <li class="nav-item dropdown" style="align-items: end;">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name != 'view_watchlist' %}active{% endif %}"
                             href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{ user.username }}
