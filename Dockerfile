@@ -15,4 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Run unit tests
+RUN python manage.py test
+
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
